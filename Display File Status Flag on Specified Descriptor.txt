@@ -1,0 +1,66 @@
+Program to Display File Status Flag on Specified Descriptor:
+
+#include<time.h>
+#include<stdio.h>
+#include<unistd.h>
+#include<sys/stat.h>
+#include<pwd.h>
+#include<grp.h>
+#include<fcntl.h>
+#include<stdlib.h>
+#include<string.h>
+#include<sys/types.h>
+
+int main()
+{
+ int fid, Yn;
+ char fname[20], Dt[20];
+ struct stat statbuf;
+ struct tm *tm1,*tm2,*tm3;
+ struct passwd *pwd;
+ struct group *grp1;
+
+ printf("\nEnter a file name: ");
+ scanf("%s",fname);
+
+ fid = open(fname, O_RDONLY);			
+
+ if(fid !=-1)						
+  {
+   Yn=fstat(fid,&statbuf);			
+   
+if(Yn!=-1)			     
+   	{
+     printf("\n\t\t***File Status Information***");
+    printf("\nDevice id is: %d",statbuf.st_dev);
+    printf("\nInode no is: %d",statbuf.st_ino);
+    printf("\nProtection: %d",statbuf.st_mode);
+    printf("\nNo of hard links: %d",statbuf.st_nlink);
+
+    printf("\n(If Special file)Device id is: %d",statbuf.st_rdev);
+    printf("\nTotal Size is: %d",statbuf.st_size);
+    printf("\nBlock Size is: %d",statbuf.st_blksize);
+    printf("\nNo of 512B blocks allocated: %d",statbuf.st_blocks);
+    
+    tm1=localtime(&statbuf.st_mtime); 
+    strftime(Dt,sizeof(Dt),"%d-%m-%Y",tm1
+   
+    printf("\nLast modification Date: %s",Dt);
+    strftime(Dt,sizeof(Dt),"%r",tm1);		
+    printf(" & Time: %s",Dt);
+
+    tm2=localtime(&statbuf.st_atime);
+    strftime(Dt,sizeof(Dt),"%d-%m-%Y",tm2);
+    printf("\nLast Access Date: %s",Dt);
+    strftime(Dt,sizeof(Dt),"%r",tm2);
+    printf(" & Time: %s",Dt);
+
+    tm3=localtime(&statbuf.st_ctime);
+    strftime(Dt,sizeof(Dt),"%d-%m-%Y",tm3);
+    printf("\nLast Status Change Date: %s",Dt);
+    strftime(Dt,sizeof(Dt),"%r",tm3);
+    printf(" & Time: %s",Dt);
+
+   }
+  }
+}
